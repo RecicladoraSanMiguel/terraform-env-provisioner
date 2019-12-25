@@ -1,4 +1,4 @@
-data "docker_registry_image" "global_images" {
+resource "docker_image" "image" {
   name  = var.image_name
-  keep_locally = var.discard_image_on_destroy
+  keep_locally = var.keep_image_locally
 }

@@ -1,3 +1,3 @@
 provider "docker" {
-  host = "tcp://${var.docker_host_ip}:2376/"
+  host = "ssh://${var.docker_host_user}@${var.docker_host_password}:${var.docker_host_port}"
 }

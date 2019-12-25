@@ -1,19 +1,28 @@
 ### Required variables ###
-variable "global__docker_host_ip" {
+variable "global__docker_host" {
+  description = ""
+  type = string
+  default = "localhost"
+}
+
+variable "global__docker_host_user" {
+  description = "SSH user to connect to the docker target"
   type = string
 }
 
-variable "service_name_prefix" {
-  type = "string"
-  default = "global"
+variable "global__docker_host_password" {
+  description = "SSH password to connect to the docker target"
+  type = string
 }
 
-### Optional variables ###
-variable "setup__base_mountpoint_path" {
-  type = "string"
-  default = "/share/docker/"
+variable "base_volumes_path" {
+  description = ""
+  type = string
+  default = "/share/docker/containers"
 }
 
-variable "setup__networks_list" {
-  type = "map"
+variable "env_id" {
+  description = "Namespace to wrap around all the service that will be provisioned by terraform"
+  type = string
+  default = "000"
 }
