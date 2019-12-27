@@ -24,7 +24,6 @@ module "jenkins_global_instance" {
 
   mounts = [
     {
-      volume_name = "jenkins_home"
       host_folder_name = "jenkins_home"
       container_path = "/var/jenkins_home/"
     }
@@ -34,7 +33,7 @@ module "jenkins_global_instance" {
 
 module "certbot_global_instance" {
   source = "../modules/environment/"
-  base_volumes_path = "/Users/andrey.castro/Ex_repos/recsm/containers_volumes"
+  base_volumes_path = var.base_volumes_path
   env_id = var.env_id
   container_name = "global"
   service_type = "certbot"
@@ -54,7 +53,7 @@ module "certbot_global_instance" {
 
 module "nginx_global_instance" {
   source = "../modules/environment/"
-  base_volumes_path = "/Users/andrey.castro/Ex_repos/recsm/containers_volumes"
+  base_volumes_path = var.base_volumes_path
   env_id = var.env_id
   container_name = "global"
   service_type = "nginx"

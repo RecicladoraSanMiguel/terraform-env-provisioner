@@ -1,4 +1,3 @@
-### Required variables ###
 variable "global__docker_host" {
   description = ""
   type = string
