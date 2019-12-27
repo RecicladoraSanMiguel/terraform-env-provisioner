@@ -18,6 +18,12 @@ variable "image_id" {
   type = string
 }
 
+variable "env_vars" {
+  description = ""
+  type = list(string)
+  default = []
+}
+
 variable "keep_image_locally" {
   description = ""
   type = bool
@@ -59,9 +65,9 @@ variable "ports" {
 variable "volumes" {
   description = ""
   type = list(object({
-    volume_name =  string
     host_folder_name = string
     container_path = string
   }))
   default = []
 }
+

@@ -12,26 +12,9 @@ module "global_network_gateway" {
   is_attachable = true
 }
 
-module "certbot_global_instance" {
-  source = "../modules/environment/"
-  env_id = var.env_id
-  container_name = "global"
-  service_type = "certbot"
-  container_image_name = "henridwyer/docker-letsencrypt-cron:latest"
-  keep_image_locally = true
-
-  volumes = [
-    {
-      volume_name = "certs"
-      host_folder_name = "certs"
-      container_path = "/certs/"
-    }
-  ]
-  networks = [module.global_network_gateway.network_name]
-}
-
 module "jenkins_global_instance" {
   source = "../modules/environment/"
+  base_volumes_path = "/Users/andrey.castro/Ex_repos/recsm/containers_volumes"
   env_id = var.env_id
   container_name = "global"
   service_type = "jenkins"
@@ -39,18 +22,39 @@ module "jenkins_global_instance" {
   keep_image_locally = true
   run_as_privileged = true
 
-  volumes = [
+  mounts = [
     {
       volume_name = "jenkins_home"
-      host_folder_name = "/jenkins_home/"
+      host_folder_name = "jenkins_home"
       container_path = "/var/jenkins_home/"
     }
   ]
   networks = [module.global_network_gateway.network_name]
 }
 
+module "certbot_global_instance" {
+  source = "../modules/environment/"
+  base_volumes_path = "/Users/andrey.castro/Ex_repos/recsm/containers_volumes"
+  env_id = var.env_id
+  container_name = "global"
+  service_type = "certbot"
+  container_image_name = "henridwyer/docker-letsencrypt-cron:latest"
+  keep_image_locally = true
+  env_vars = var.certbot_env_vars
+
+  mounts = [
+    {
+      host_folder_name = "certs"
+      container_path = "/certs/"
+    }
+  ]
+
+  networks = [module.global_network_gateway.network_name]
+}
+
 module "nginx_global_instance" {
   source = "../modules/environment/"
+  base_volumes_path = "/Users/andrey.castro/Ex_repos/recsm/containers_volumes"
   env_id = var.env_id
   container_name = "global"
   service_type = "nginx"
@@ -58,11 +62,14 @@ module "nginx_global_instance" {
   keep_image_locally = true
   run_as_privileged = true
 
-  volumes = [
+  mounts = [
     {
-      volume_name = "conf.d"
       host_folder_name = "conf.d"
       container_path = "/etc/nginx/conf.d/"
+    },
+    {
+      host_folder_name = module.certbot_global_instance.volumes[0]
+      container_path = "/certs/"
     }
   ]
 
@@ -76,5 +83,45 @@ module "nginx_global_instance" {
       external = 443
     }
   ]
+
   networks = [module.global_network_gateway.network_name]
 }
+
+module "certbot_vhost" {
+  source = "../modules/nginx_vhosts/certbot"
+  vhost_hostname = "_"
+  vhost_port = 80
+  upstream = {
+    name = module.certbot_global_instance.container_name
+    service_type = "cerbot"
+    port: 80
+  }
+  vhost_destination_path = module.nginx_global_instance.volumes[0]
+}
+
+module "jenkins_vhost" {
+  source = "../modules/nginx_vhosts/proxy"
+  vhost_hostname = "jenkins.recsm.com"
+  is_secure = false
+  upstream = {
+    name = module.jenkins_global_instance.container_name
+    service_type = "jenkins"
+    port: 8080
+  }
+  vhost_destination_path = module.nginx_global_instance.volumes[0]
+}
+
+//module "certbot_exec" {
+//  source = "../modules/local/container_exec"
+//  module_depends_on = [module.certbot_global_instance.depend_link]
+//  container_name = module.certbot_global_instance.container_name
+//  bash_command = "/scripts/run_certbot.sh"
+//  interpreter = "ash"
+//}
+
+//module "nginx_reload" {
+//  source = "../modules/local/container_exec"
+//  module_depends_on = [module.nginx_global_instance.depend_link]
+//  container_name = module.nginx_global_instance.container_name
+//  bash_command = "service nginx restart"
+//}

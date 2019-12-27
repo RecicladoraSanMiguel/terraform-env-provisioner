@@ -1,13 +1,18 @@
+locals {
+  container_name = "${var.env_id}_${var.service_type}_${var.container_name}"
+}
+
 resource "docker_container" "docker_container" {
-  name = "${var.env_id}-${var.service_type}-${var.container_name}"
+  name = local.container_name
   image = var.image_id
   restart = var.restart_policy
   privileged = var.run_as_privileged
+  env = var.env_vars
 
   dynamic "ports" {
-    for_each = [for p in var.ports: {
-      internal = p.internal
-      external = p.external
+    for_each = [for port in var.ports: {
+      internal = port.internal
+      external = port.external
     }]
     content {
       internal = ports.value.internal
@@ -15,16 +20,15 @@ resource "docker_container" "docker_container" {
     }
   }
 
-  dynamic "volumes" {
+  dynamic "mounts" {
     for_each = [for v in var.volumes: {
-      volume_name = v.volume_name
-      host_folder_name = v.host_folder_name
       container_path = v.container_path
+      host_folder_name = v.host_folder_name
     }]
     content {
-      volume_name = "${var.env_id}-${var.service_type}-${volumes.value.volume_name}"
-      host_path = "${var.base_volumes_path}/${var.env_id}}/${var.service_type}/${volumes.value.host_folder_name}/"
-      container_path = volumes.value.container_path
+      type = "bind"
+      target = mounts.value.container_path
+      source = mounts.value.host_folder_name
     }
   }
 
