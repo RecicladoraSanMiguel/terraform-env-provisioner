@@ -14,7 +14,7 @@ module "global_network_gateway" {
 
 module "jenkins_global_instance" {
   source = "../modules/environment/"
-  base_volumes_path = "/Users/andrey.castro/Ex_repos/recsm/containers_volumes"
+  base_volumes_path = var.base_volumes_path
   env_id = var.env_id
   container_name = "global"
   service_type = "jenkins"
