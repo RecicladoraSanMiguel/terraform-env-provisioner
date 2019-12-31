@@ -4,7 +4,7 @@ variable "global__docker_host" {
   default = "localhost"
 }
 
-variable "global__docker_port" {
+variable "global__docker_host_port" {
   description = ""
   type = number
   default = 22

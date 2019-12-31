@@ -10,7 +10,7 @@ module "base_env" {
   source = "../base"
   env_id = var.env_id
   host_docker_ssh_hostname = var.global__docker_host
-  host_docker_ssh_port = var.global__docker_host
+  host_docker_ssh_port = var.global__docker_host_port
   host_docker_ssh_user = var.global__docker_host_user
   host_docker_ssh_passwd = var.global__docker_host_password
   base_volumes_path = var.base_volumes_path
