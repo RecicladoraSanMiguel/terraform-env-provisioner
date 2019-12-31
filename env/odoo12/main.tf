@@ -61,6 +61,7 @@ module "vhost" {
   source = "../../modules/nginx_vhosts/proxy"
   vhost_destination_path = data.terraform_remote_state.setup.outputs.nginx-gateway_vhosts_folder_path
   vhost_hostname = "${module.base_env.env_id}.recsm.com"
+  is_secure = false
   upstream = {
     name = module.odoo12_instance.container_name
     port = 8069
