@@ -3,12 +3,7 @@ variable "env_id" {
   type = string
 }
 
-variable "base_volumes_path" {
-  description = ""
-  type = string
-}
-
-variable "container_name" {
+variable "container_name_suffix" {
   description = ""
   type = string
 }
@@ -22,12 +17,6 @@ variable "env_vars" {
   description = ""
   type = list(string)
   default = []
-}
-
-variable "keep_image_locally" {
-  description = ""
-  type = bool
-  default = true
 }
 
 variable "run_as_privileged" {

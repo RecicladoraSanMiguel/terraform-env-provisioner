@@ -3,7 +3,7 @@ variable "env_id" {
   type = string
 }
 
-variable "container_name" {
+variable "container_name_suffix" {
   description = ""
   type = string
 }
@@ -30,7 +30,7 @@ variable "keep_image_locally" {
   default = false
 }
 
-variable "base_volumes_path" {
+variable "base_env_path" {
   description = ""
   type = string
   default = "/share/docker/containers"

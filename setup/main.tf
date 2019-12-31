@@ -1,22 +1,19 @@
-module "docker_provider" {
-  source = "../modules/docker/provider"
-  docker_host_user = var.global__docker_host_user
-  docker_host_password = var.global__docker_host_password
-}
-
-module "global_network_gateway" {
-  source = "../modules/docker/network"
-  env_id = var.env_id
-  network_name = "gateway"
-  internal_only = false
-  is_attachable = true
+module "base_env" {
+  source = "../env/base"
+  base_volumes_path = var.base_volumes_path
+  env_id = "000"
+  host_docker_ssh_user = var.global__docker_host_user
+  host_docker_ssh_passwd = var.global__docker_host_password
+  env_network_suffix = "gateway"
+  env_network_private = false
+  env_network_attachable = true
 }
 
 module "jenkins_global_instance" {
   source = "../modules/environment/"
-  base_volumes_path = var.base_volumes_path
-  env_id = var.env_id
-  container_name = "global"
+  base_env_path = module.base_env.env_path
+  env_id = module.base_env.env_id
+  container_name_suffix = "global"
   service_type = "jenkins"
   container_image_name = "jenkins/jenkins:lts-centos"
   keep_image_locally = true
@@ -28,14 +25,14 @@ module "jenkins_global_instance" {
       container_path = "/var/jenkins_home/"
     }
   ]
-  networks = [module.global_network_gateway.network_name]
+  networks = [module.base_env.env_network_name]
 }
 
 module "certbot_global_instance" {
   source = "../modules/environment/"
-  base_volumes_path = var.base_volumes_path
-  env_id = var.env_id
-  container_name = "global"
+  base_env_path = module.base_env.env_path
+  env_id = module.base_env.env_id
+  container_name_suffix = "global"
   service_type = "certbot"
   container_image_name = "henridwyer/docker-letsencrypt-cron:latest"
   keep_image_locally = true
@@ -48,14 +45,14 @@ module "certbot_global_instance" {
     }
   ]
 
-  networks = [module.global_network_gateway.network_name]
+  networks = [module.base_env.env_network_name]
 }
 
 module "nginx_global_instance" {
   source = "../modules/environment/"
-  base_volumes_path = var.base_volumes_path
-  env_id = var.env_id
-  container_name = "global"
+  base_env_path = module.base_env.env_path
+  env_id = module.base_env.env_id
+  container_name_suffix = "global"
   service_type = "nginx"
   container_image_name = "nginx:1.17.3"
   keep_image_locally = true
@@ -83,7 +80,7 @@ module "nginx_global_instance" {
     }
   ]
 
-  networks = [module.global_network_gateway.network_name]
+  networks = [module.base_env.env_network_name]
 }
 
 module "certbot_vhost" {

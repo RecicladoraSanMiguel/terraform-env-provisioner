@@ -5,8 +5,8 @@ module "docker_image" {
 }
 
 module "container_paths" {
-  source = "../local/folder/"
-  base_volumes_path = var.base_volumes_path
+  source = "../docker/mounts"
+  base_env_path = var.base_env_path
   env_id = var.env_id
   service_type = var.service_type
   mounts = var.mounts
@@ -14,10 +14,9 @@ module "container_paths" {
 
 module "docker_container" {
   source = "../docker/container"
-  base_volumes_path = var.base_volumes_path
   env_id = var.env_id
   service_type = var.service_type
-  container_name = var.container_name
+  container_name_suffix = var.container_name_suffix
   image_id = module.docker_image.image_id
   run_as_privileged = var.run_as_privileged
   networks = var.networks
@@ -25,4 +24,3 @@ module "docker_container" {
   volumes = module.container_paths.mounts
   env_vars = var.env_vars
 }
-

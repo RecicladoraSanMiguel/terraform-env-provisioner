@@ -4,6 +4,12 @@ variable "global__docker_host" {
   default = "localhost"
 }
 
+variable "global__docker_port" {
+  description = ""
+  type = number
+  default = 22
+}
+
 variable "global__docker_host_user" {
   description = "SSH user to connect to the docker target"
   type = string
@@ -23,7 +29,6 @@ variable "base_volumes_path" {
 variable "env_id" {
   description = "Namespace to wrap around all the service that will be provisioned by terraform"
   type = string
-  default = ""
 }
 
 variable "db_name" {
@@ -34,7 +39,7 @@ variable "db_name" {
 
 variable "db_user" {
   description = ""
-  type = "string"
+  type = string
   default = "odoo"
 }
 

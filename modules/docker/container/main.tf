@@ -1,5 +1,5 @@
 locals {
-  container_name = "${var.env_id}_${var.service_type}_${var.container_name}"
+  container_name = "${var.env_id}_${var.service_type}_${var.container_name_suffix}"
 }
 
 resource "docker_container" "docker_container" {

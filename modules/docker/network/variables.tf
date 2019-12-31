@@ -3,7 +3,7 @@ variable "env_id" {
   type = string
 }
 
-variable "network_name" {
+variable "network_suffix" {
   description = ""
   type = string
   default = "default"

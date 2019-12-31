@@ -9,6 +9,11 @@ variable "path" {
   type = string
 }
 
+variable "filename" {
+  description = ""
+  type = string
+}
+
 variable "depends" {
   description = ""
   type = any
