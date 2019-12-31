@@ -1,4 +1,4 @@
-output "env_network" {
+output "gateway_network" {
   value = module.base_env.env_network_name
 }
 

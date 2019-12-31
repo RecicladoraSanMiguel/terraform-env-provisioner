@@ -1,3 +1,11 @@
+data "terraform_remote_state" "setup" {
+  backend = "local"
+
+  config = {
+    path = "../../setup/terraform.tfstate"
+  }
+}
+
 module "base_env" {
   source = "../base"
   env_id = var.env_id
