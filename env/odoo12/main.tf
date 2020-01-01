@@ -46,7 +46,7 @@ module "odoo12_instance" {
   env_id = module.base_env.env_id
   container_name_suffix = "odoo12"
   service_type = "odoo"
-  container_image_name = "odoo:12.0"
+  container_image_name = "recsm/odoo:12.0"
   keep_image_locally = true
   run_as_privileged = true
 
