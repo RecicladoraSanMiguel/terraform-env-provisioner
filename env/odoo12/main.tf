@@ -1,9 +1,18 @@
+locals {
+  env_type = var.is_dev == true ? "dev" : "prod"
+}
+
 data "terraform_remote_state" "setup" {
   backend = "local"
 
   config = {
     path = "../../setup/terraform.tfstate"
   }
+}
+
+module "print" {
+  source = "../../modules/local/print"
+  string_to_print = local.env_type
 }
 
 module "base_env" {
@@ -53,7 +62,8 @@ module "odoo12_instance" {
   env_vars = [
     "HOST=${module.postgres_12_instance.container_name}",
     "USER=${var.db_user}",
-    "PASSWORD=${var.db_password}"
+    "PASSWORD=${var.db_password}",
+    "ENV_TYPE=${local.env_type}"
   ]
 
   mounts = [
