@@ -10,11 +10,6 @@ data "terraform_remote_state" "setup" {
   }
 }
 
-module "print" {
-  source = "../../modules/local/print"
-  string_to_print = local.env_type
-}
-
 module "base_env" {
   source = "../base"
   env_id = var.env_id
